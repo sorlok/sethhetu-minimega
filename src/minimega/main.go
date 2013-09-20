@@ -53,13 +53,13 @@ func main() {
 		*f_base += "/"
 	}
 
-	// rebase f_iomBase if f_base changed but iomBase did not
-	if *f_base != "/tmp/minimega/" && *f_iomBase == "/tmp/minimega/files" {
-		*f_iomBase = *f_base + "files"
-	}
-
 	if !strings.HasSuffix(*f_iomBase, "/") {
 		*f_iomBase += "/"
+	}
+
+	// rebase f_iomBase if f_base changed but iomBase did not
+	if *f_base != "/tmp/minimega/" && *f_iomBase == "/tmp/minimega/files/" {
+		*f_iomBase = *f_base + "files/"
 	}
 
 	if *f_version {
