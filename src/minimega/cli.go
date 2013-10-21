@@ -577,6 +577,19 @@ call stop without the optional VM ID or name.
 			},
 		},
 
+		"vm_vga": &command{
+			Call:      cliVMVGA,
+			Helpshort: "set the VGA adapter for a VM",
+			Helplong:  `
+Set the VGA adapter for a VM. The 'std' adapter should work for most machines,
+while the 'cirrus' adapter can work for older systems such as Windows 95 through XP.`,
+			Record:    true,
+			Clear: func() error {
+				info.Vga = "cirrus"
+				return nil
+			},
+		},
+
 		"vm_disk": &command{
 			Call:      cliVMDisk,
 			Helpshort: "set a disk image to attach to a VM",

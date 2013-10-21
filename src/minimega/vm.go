@@ -47,6 +47,7 @@ type vmInfo struct {
 	Name         string
 	Memory       string // memory for the vm, in megabytes
 	Vcpus        string // number of virtual cpus
+	Vga          string // vga mode
 	DiskPath     string
 	CdromPath    string
 	KernelPath   string
@@ -79,6 +80,7 @@ func init() {
 	// default parameters at startup
 	info.Memory = "512"
 	info.Vcpus = "1"
+        info.Vga = "cirrus"
 	info.DiskPath = ""
 	info.KernelPath = ""
 	info.InitrdPath = ""
@@ -103,6 +105,7 @@ func configToString() string {
 	fmt.Fprintln(&o, "Current VM configuration:")
 	fmt.Fprintf(w, "Memory:\t%v\n", info.Memory)
 	fmt.Fprintf(w, "VCPUS:\t%v\n", info.Vcpus)
+	fmt.Fprintf(w, "VGA:\t%v\n", info.Vga)
 	fmt.Fprintf(w, "Disk Path:\t%v\n", info.DiskPath)
 	fmt.Fprintf(w, "CDROM Path:\t%v\n", info.CdromPath)
 	fmt.Fprintf(w, "Kernel Path:\t%v\n", info.KernelPath)
@@ -347,6 +350,7 @@ func (info *vmInfo) Copy() *vmInfo {
 	newInfo.Name = info.Name
 	newInfo.Memory = info.Memory
 	newInfo.Vcpus = info.Vcpus
+	newInfo.Vga = info.Vga
 	newInfo.DiskPath = info.DiskPath
 	newInfo.CdromPath = info.CdromPath
 	newInfo.KernelPath = info.KernelPath
@@ -971,7 +975,7 @@ func (vm *vmInfo) vmGetArgs() []string {
 	args = append(args, "unix:"+vm.qmpPath()+",server")
 
 	args = append(args, "-vga")
-	args = append(args, "cirrus")
+	args = append(args, vm.Vga)
 
 	args = append(args, "-rtc")
 	args = append(args, "clock=vm,base=utc")
@@ -1091,6 +1095,21 @@ func cliVMVCPUs(c cliCommand) cliResponse {
 	} else {
 		return cliResponse{
 			Error: "vm_vcpus takes only one argument",
+		}
+	}
+	return cliResponse{}
+}
+
+func cliVMVGA(c cliCommand) cliResponse {
+	if len(c.Args) == 0 {
+		return cliResponse{
+			Response: info.Vga,
+		}
+	} else if len(c.Args) == 1 {
+		info.Vga = c.Args[0]
+	} else {
+		return cliResponse{
+			Error: "vm_vga takes only one argument",
 		}
 	}
 	return cliResponse{}
